@@ -9,8 +9,10 @@ import "./globals.css"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { AdvancedSoundProvider } from "@/components/cultural/advanced-sound-manager"
-import { NotificationProvider } from "@/components/cultural/premium-notifications"
+import { NotificationProvider as PremiumNotificationProvider } from "@/components/cultural/premium-notifications"
 import { PremiumCursor } from "@/components/cultural/premium-cursor"
+import { CartProvider } from "@/lib/cart-context"
+import { NotificationProvider } from "@/lib/notification-context"
 
 export const metadata: Metadata = {
   title: "BharatKart - Celebrating India's Heritage",
@@ -27,22 +29,27 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${geistSans} ${geistMono} antialiased`}>
-      <body>
+    <html lang="en" className={`${geistSans} ${geistMono} antialiased`} suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <AdvancedSoundProvider>
+          <CartProvider>
             <NotificationProvider>
-              <PremiumCursor />
-              <Suspense fallback={<div>Loading...</div>}>
-                <Header />
-                <main className="min-h-screen">{children}</main>
-                <Footer />
-              </Suspense>
+              <AdvancedSoundProvider>
+                <PremiumNotificationProvider>
+                  <PremiumCursor />
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Header />
+                    <main className="min-h-screen">{children}</main>
+                    <Footer />
+                  </Suspense>
+                </PremiumNotificationProvider>
+              </AdvancedSoundProvider>
             </NotificationProvider>
-          </AdvancedSoundProvider>
+          </CartProvider>
         </ThemeProvider>
         <Analytics />
       </body>
     </html>
   )
 }
+

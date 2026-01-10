@@ -54,7 +54,7 @@ export default function LandingPage() {
       name: "Rajasthan",
       nameHindi: "राजस्थान",
       tagline: "Land of Kings",
-      image: "/rajasthan-desert-palace.jpg",
+      image: "/images/cultural/rajasthan.jpg",
       specialties: ["Blue Pottery", "Kathputli", "Block Prints"],
       color: "from-red-600 to-primary",
     },
@@ -62,7 +62,7 @@ export default function LandingPage() {
       name: "Kerala",
       nameHindi: "केरल",
       tagline: "God's Own Country",
-      image: "/kerala-backwaters-coconut.jpg",
+      image: "/images/cultural/kerala.jpg",
       specialties: ["Coir Products", "Spices", "Ayurveda"],
       color: "from-secondary to-teal-500",
     },
@@ -70,7 +70,7 @@ export default function LandingPage() {
       name: "Gujarat",
       nameHindi: "गुजरात",
       tagline: "Vibrant Gujarat",
-      image: "/gujarat-colorful-textiles-kites.jpg",
+      image: "/images/cultural/gujarat.jpg",
       specialties: ["Bandhani", "Mirror Work", "Patola"],
       color: "from-yellow-500 to-pink-500",
     },
@@ -78,7 +78,7 @@ export default function LandingPage() {
       name: "Tamil Nadu",
       nameHindi: "तमिल नाडु",
       tagline: "Temple Land",
-      image: "/tamil-nadu-bronze-temple.jpg",
+      image: "/images/cultural/tamil-nadu.jpg",
       specialties: ["Bronze Idols", "Silk Sarees", "Tanjore Art"],
       color: "from-amber-600 to-red-500",
     },
@@ -99,163 +99,7 @@ export default function LandingPage() {
       <ThreeDEnvironment scene="landing" className="absolute inset-0 z-0" />
       <FloatingElements count={25} />
 
-      <CulturalTransition type="scroll">
-        <motion.header
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="relative z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-sm"
-        >
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center justify-between">
-              <motion.div
-                className="flex items-center space-x-3"
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 300 }}
-                onMouseEnter={playHover}
-              >
-                <div className="w-10 h-10 bg-gradient-to-br from-primary to-orange-600 rounded-full flex items-center justify-center shadow-lg">
-                  <Sparkles className="w-6 h-6 text-primary-foreground" />
-                </div>
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-orange-600 bg-clip-text text-transparent">
-                    BharatKart
-                  </h1>
-                  <p className="text-xs text-primary font-medium">भारत कार्ट</p>
-                </div>
-              </motion.div>
 
-              <nav className="hidden lg:flex items-center space-x-8">
-                <Link
-                  href="/states"
-                  className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base"
-                  onMouseEnter={playHover}
-                >
-                  Explore States
-                </Link>
-                <Link
-                  href="/artisans"
-                  className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base"
-                  onMouseEnter={playHover}
-                >
-                  Meet Artisans
-                </Link>
-                <Link
-                  href="/collections"
-                  className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base"
-                  onMouseEnter={playHover}
-                >
-                  Collections
-                </Link>
-                <PremiumButton
-                  size="sm"
-                  variant="secondary"
-                  className="border-border text-primary hover:bg-muted bg-transparent"
-                  data-cursor="button"
-                >
-                  <Globe className="w-4 h-4 mr-2" />
-                  EN | हिं
-                </PremiumButton>
-              </nav>
-
-              <div className="flex items-center space-x-2 sm:space-x-4">
-                <div className="hidden sm:flex items-center space-x-2">
-                  <PremiumButton
-                    size="sm"
-                    variant="ghost"
-                    className="text-primary hover:bg-muted"
-                    data-cursor="button"
-                    onMouseEnter={playHover}
-                  >
-                    <Heart className="w-5 h-5" />
-                  </PremiumButton>
-                  <PremiumButton
-                    size="sm"
-                    variant="ghost"
-                    className="text-primary hover:bg-muted"
-                    data-cursor="button"
-                    onMouseEnter={playHover}
-                  >
-                    <ShoppingBag className="w-5 h-5" />
-                  </PremiumButton>
-                </div>
-
-                <Link href="/get-started" className="hidden sm:block">
-                  <PremiumButton
-                    size="lg"
-                    variant="primary"
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg"
-                    data-cursor="button"
-                    onClick={playClick}
-                  >
-                    <span className="hidden md:inline">Get Started</span>
-                    <span className="md:hidden">Start</span>
-                  </PremiumButton>
-                </Link>
-
-                <button
-                  className="lg:hidden p-2 text-foreground hover:text-primary transition-colors"
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  aria-label="Toggle menu"
-                >
-                  {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                </button>
-              </div>
-            </div>
-
-            <AnimatePresence>
-              {isMobileMenuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="lg:hidden mt-4 pt-4 border-t border-border"
-                >
-                  <nav className="flex flex-col space-y-4">
-                    <Link
-                      href="/states"
-                      className="text-foreground hover:text-primary transition-colors font-medium py-2"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Explore States
-                    </Link>
-                    <Link
-                      href="/artisans"
-                      className="text-foreground hover:text-primary transition-colors font-medium py-2"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Meet Artisans
-                    </Link>
-                    <Link
-                      href="/collections"
-                      className="text-foreground hover:text-primary transition-colors font-medium py-2"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Collections
-                    </Link>
-                    <div className="flex items-center justify-between pt-4 border-t border-border">
-                      <div className="flex items-center space-x-2">
-                        <PremiumButton size="sm" variant="ghost" className="text-primary">
-                          <Heart className="w-5 h-5" />
-                        </PremiumButton>
-                        <PremiumButton size="sm" variant="ghost" className="text-primary">
-                          <ShoppingBag className="w-5 h-5" />
-                        </PremiumButton>
-                      </div>
-                      <Link href="/get-started" onClick={() => setIsMobileMenuOpen(false)}>
-                        <PremiumButton size="lg" variant="primary" className="bg-primary text-primary-foreground">
-                          Get Started
-                        </PremiumButton>
-                      </Link>
-                    </div>
-                  </nav>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </motion.header>
-      </CulturalTransition>
 
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -273,7 +117,7 @@ export default function LandingPage() {
             />
           </video>
 
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/70 via-orange-800/60 to-amber-900/70" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-orange-900/75 to-amber-950/80" />
 
           <motion.div
             className="absolute inset-0 opacity-5"
@@ -298,32 +142,23 @@ export default function LandingPage() {
             <CulturalTransition key={currentSlide} type="kaleidoscope">
               <motion.div>
                 <motion.h1
-                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-6 leading-tight text-balance"
+                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-6 leading-tight text-balance text-white"
                   style={{
-                    background: `linear-gradient(135deg, ${heroSlides[currentSlide].bgColor})`,
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    textShadow: "0 0 30px rgba(217, 119, 6, 0.5)",
+                    textShadow: "0 4px 20px rgba(0,0,0,0.4), 0 0 60px rgba(255,255,255,0.2)",
                   }}
-                  animate={{
-                    textShadow: [
-                      "0 0 30px rgba(217, 119, 6, 0.5)",
-                      "0 0 40px rgba(217, 119, 6, 0.8)",
-                      "0 0 30px rgba(217, 119, 6, 0.5)",
-                    ],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeInOut",
-                  }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8 }}
                 >
                   {heroSlides[currentSlide].title}
                 </motion.h1>
 
                 <motion.p
-                  className="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-8 text-yellow-100 font-light max-w-4xl mx-auto text-pretty"
+                  className="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-8 font-medium max-w-4xl mx-auto text-pretty"
+                  style={{
+                    color: "#FFFFFF",
+                    textShadow: "0 2px 10px rgba(0,0,0,0.5), 0 0 40px rgba(0,0,0,0.3)",
+                  }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
@@ -357,7 +192,7 @@ export default function LandingPage() {
               variant="secondary"
               data-cursor="button"
               onClick={playClick}
-              className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 bg-transparent backdrop-blur-sm"
+              className="w-full sm:w-auto border-white/60 text-white hover:bg-white/10 bg-transparent backdrop-blur-sm"
             >
               Watch Stories
             </PremiumButton>
@@ -426,9 +261,8 @@ export default function LandingPage() {
                 setCurrentSlide(index)
                 playClick()
               }}
-              className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all ${
-                index === currentSlide ? "bg-white shadow-lg" : "bg-white/50"
-              }`}
+              className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all ${index === currentSlide ? "bg-white shadow-lg" : "bg-white/50"
+                }`}
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
               data-cursor="button"
@@ -480,7 +314,7 @@ export default function LandingPage() {
                     onMouseEnter={playHover}
                     data-cursor="product"
                   >
-                    <Card className="overflow-hidden group cursor-pointer border-0 shadow-lg hover:shadow-2xl transition-all duration-300 bg-card">
+                    <Card className="overflow-hidden group cursor-pointer border border-orange-200 dark:border-orange-900/40 shadow-lg hover:shadow-2xl transition-all duration-300 bg-card rounded-2xl">
                       <div className="relative h-48 sm:h-56 lg:h-64 overflow-hidden">
                         <img
                           src={state.image || "/placeholder.svg"}
@@ -491,17 +325,17 @@ export default function LandingPage() {
                           className={`absolute inset-0 bg-gradient-to-t ${state.color} opacity-60 group-hover:opacity-40 transition-opacity`}
                         />
                         <div className="absolute top-4 right-4">
-                          <Badge className="bg-white/90 text-gray-800 font-medium text-xs">
+                          <Badge className="bg-white/95 text-gray-800 font-semibold text-xs shadow-sm border border-orange-200">
                             {state.specialties.length} Crafts
                           </Badge>
                         </div>
                       </div>
 
-                      <div className="p-4 sm:p-6">
-                        <div className="mb-3">
+                      <div className="p-5 sm:p-6">
+                        <div className="mb-4">
                           <h3 className="text-lg sm:text-xl font-bold text-card-foreground">{state.name}</h3>
-                          <p className="text-sm text-primary font-medium">{state.nameHindi}</p>
-                          <p className="text-sm text-muted-foreground italic">{state.tagline}</p>
+                          <p className="text-sm text-orange-600 dark:text-orange-400 font-medium">{state.nameHindi}</p>
+                          <p className="text-sm text-muted-foreground italic mt-1">{state.tagline}</p>
                         </div>
 
                         <div className="flex flex-wrap gap-2">
@@ -509,7 +343,7 @@ export default function LandingPage() {
                             <Badge
                               key={specialty}
                               variant="secondary"
-                              className="text-xs bg-muted text-muted-foreground"
+                              className="text-xs bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800"
                             >
                               {specialty}
                             </Badge>
@@ -611,44 +445,44 @@ export default function LandingPage() {
       </ParallaxSection>
 
       {/* Cultural Footer */}
-      <footer className="bg-gray-900 text-white py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+      <footer className="bg-gray-900 text-white py-12 sm:py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-10">
             <div>
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-primary to-orange-600 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
                   <Sparkles className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">BharatKart</h3>
-                  <p className="text-xs text-orange-400">भारत कार्ट</p>
+                  <h3 className="text-xl font-bold text-white">BharatKart</h3>
+                  <p className="text-sm text-orange-400 font-medium">भारत कार्ट</p>
                 </div>
               </div>
-              <p className="text-gray-400 mb-4">
+              <p className="text-gray-300 mb-4 text-sm leading-relaxed">
                 Connecting India's heritage with the world through authentic craftsmanship.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4 text-orange-400">Explore</h4>
-              <ul className="space-y-2 text-gray-400">
+              <h4 className="font-semibold mb-4 text-orange-400 text-lg">Explore</h4>
+              <ul className="space-y-3 text-gray-300">
                 <li>
-                  <Link href="/states" className="hover:text-white transition-colors">
+                  <Link href="/states" className="hover:text-orange-400 transition-colors text-sm">
                     All States
                   </Link>
                 </li>
                 <li>
-                  <Link href="/artisans" className="hover:text-white transition-colors">
+                  <Link href="/artisans" className="hover:text-orange-400 transition-colors text-sm">
                     Meet Artisans
                   </Link>
                 </li>
                 <li>
-                  <Link href="/collections" className="hover:text-white transition-colors">
+                  <Link href="/collections" className="hover:text-orange-400 transition-colors text-sm">
                     Collections
                   </Link>
                 </li>
                 <li>
-                  <Link href="/festivals" className="hover:text-white transition-colors">
+                  <Link href="/festivals" className="hover:text-orange-400 transition-colors text-sm">
                     Festivals
                   </Link>
                 </li>
@@ -656,25 +490,25 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4 text-orange-400">Support</h4>
-              <ul className="space-y-2 text-gray-400">
+              <h4 className="font-semibold mb-4 text-orange-400 text-lg">Support</h4>
+              <ul className="space-y-3 text-gray-300">
                 <li>
-                  <Link href="/help" className="hover:text-white transition-colors">
+                  <Link href="/help" className="hover:text-orange-400 transition-colors text-sm">
                     Help Center
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shipping" className="hover:text-white transition-colors">
+                  <Link href="/shipping" className="hover:text-orange-400 transition-colors text-sm">
                     Shipping Info
                   </Link>
                 </li>
                 <li>
-                  <Link href="/returns" className="hover:text-white transition-colors">
+                  <Link href="/returns" className="hover:text-orange-400 transition-colors text-sm">
                     Returns
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="hover:text-white transition-colors">
+                  <Link href="/contact" className="hover:text-orange-400 transition-colors text-sm">
                     Contact Us
                   </Link>
                 </li>
@@ -682,20 +516,20 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4 text-orange-400">Connect</h4>
-              <p className="text-gray-400 mb-4">
+              <h4 className="font-semibold mb-4 text-orange-400 text-lg">Connect</h4>
+              <p className="text-gray-300 mb-4 text-sm leading-relaxed">
                 Join our cultural community and stay updated with new artisan stories.
               </p>
               <div className="flex space-x-2">
-                <PremiumButton size="sm" variant="primary" className="bg-gradient-to-r from-primary to-orange-600">
+                <PremiumButton size="sm" variant="primary" className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-md">
                   Subscribe
                 </PremiumButton>
               </div>
             </div>
           </div>
 
-          <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 BharatKart. Celebrating India's Heritage. Made with ❤️ for our artisans.</p>
+          <div className="border-t border-orange-900/30 pt-8 text-center">
+            <p className="text-gray-300 text-sm">&copy; 2024 BharatKart. Celebrating India's Heritage. Made with ❤️ for our artisans.</p>
           </div>
         </div>
       </footer>

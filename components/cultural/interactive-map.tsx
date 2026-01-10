@@ -61,7 +61,7 @@ export function InteractiveMap() {
           <motion.path
             d="M50 150 L150 140 L160 200 L80 220 Z"
             fill={hoveredState === "rajasthan" ? statesData.rajasthan.color : "#FFA500"}
-            stroke="#fff"
+            stroke="#92400e"
             strokeWidth="2"
             className="cursor-pointer"
             onMouseEnter={() => setHoveredState("rajasthan")}
@@ -77,7 +77,7 @@ export function InteractiveMap() {
           <motion.path
             d="M80 220 L160 200 L170 280 L90 290 Z"
             fill={hoveredState === "gujarat" ? statesData.gujarat.color : "#FFD700"}
-            stroke="#fff"
+            stroke="#92400e"
             strokeWidth="2"
             className="cursor-pointer"
             onMouseEnter={() => setHoveredState("gujarat")}
@@ -90,7 +90,7 @@ export function InteractiveMap() {
           <motion.path
             d="M170 280 L250 270 L260 350 L180 360 Z"
             fill={hoveredState === "maharashtra" ? statesData.maharashtra.color : "#FF8C00"}
-            stroke="#fff"
+            stroke="#92400e"
             strokeWidth="2"
             className="cursor-pointer"
             onMouseEnter={() => setHoveredState("maharashtra")}
@@ -103,7 +103,7 @@ export function InteractiveMap() {
           <motion.path
             d="M200 400 L220 380 L240 450 L210 460 Z"
             fill={hoveredState === "kerala" ? statesData.kerala.color : "#228B22"}
-            stroke="#fff"
+            stroke="#92400e"
             strokeWidth="2"
             className="cursor-pointer"
             onMouseEnter={() => setHoveredState("kerala")}
@@ -116,7 +116,7 @@ export function InteractiveMap() {
           <motion.path
             d="M240 380 L320 370 L330 450 L250 460 Z"
             fill={hoveredState === "tamilnadu" ? statesData.tamilnadu.color : "#B8860B"}
-            stroke="#fff"
+            stroke="#92400e"
             strokeWidth="2"
             className="cursor-pointer"
             onMouseEnter={() => setHoveredState("tamilnadu")}

@@ -24,6 +24,7 @@ import {
   Globe,
 } from "lucide-react"
 import Link from "next/link"
+import { Breadcrumbs, breadcrumbConfigs } from "@/components/ui/breadcrumbs"
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -191,6 +192,12 @@ export default function ExplorePage() {
         </div>
       </motion.header>
 
+      {/* Breadcrumbs */}
+      <Breadcrumbs
+        items={breadcrumbConfigs.explore}
+        className="bg-white dark:bg-gray-800 border-b border-orange-100 dark:border-gray-700"
+      />
+
       {/* Hero Cultural Carousel */}
       <section className="relative h-96 overflow-hidden">
         <AnimatePresence mode="wait">
@@ -258,9 +265,8 @@ export default function ExplorePage() {
             <button
               key={index}
               onClick={() => setCurrentFestival(index)}
-              className={`w-3 h-3 rounded-full transition-all ${
-                index === currentFestival ? "bg-white" : "bg-white/50"
-              }`}
+              className={`w-3 h-3 rounded-full transition-all ${index === currentFestival ? "bg-white" : "bg-white/50"
+                }`}
             />
           ))}
         </div>
@@ -294,12 +300,12 @@ export default function ExplorePage() {
               <Button
                 variant={viewMode === "list" ? "default" : "outline"}
                 onClick={() => setViewMode("list")}
-                className="border-orange-300 text-orange-600"
+                className="border-orange-400 text-orange-600"
               >
                 <List className="w-4 h-4 mr-2" />
                 List View
               </Button>
-              <Button variant="outline" className="border-orange-300 text-orange-600 bg-transparent">
+              <Button variant="outline" className="border-orange-400 text-orange-600 bg-transparent">
                 <Filter className="w-4 h-4 mr-2" />
                 Filters
               </Button>
@@ -526,7 +532,7 @@ export default function ExplorePage() {
 
                     <Button
                       variant="outline"
-                      className="w-full border-orange-300 text-orange-600 hover:bg-orange-50 bg-transparent"
+                      className="w-full border-orange-400 text-orange-600 hover:bg-orange-50 bg-transparent"
                     >
                       View Profile
                     </Button>

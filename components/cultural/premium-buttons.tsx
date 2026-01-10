@@ -30,16 +30,16 @@ export function PremiumButton({
     onClick?.()
   }
 
-  const baseClasses = "relative overflow-hidden font-medium transition-all duration-300 rounded-lg"
+  const baseClasses = "relative overflow-hidden font-semibold transition-all duration-300 rounded-xl flex items-center justify-center"
 
   const variantClasses = {
-    primary: "bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-lg hover:shadow-xl",
-    secondary: "border-2 border-orange-300 text-orange-600 bg-transparent hover:bg-orange-50",
-    cultural: "bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white shadow-lg",
+    primary: "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg hover:shadow-xl hover:from-orange-600 hover:to-orange-700",
+    secondary: "border-2 border-orange-400 text-orange-600 bg-white/80 backdrop-blur-sm hover:bg-orange-50 hover:border-orange-500",
+    cultural: "bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white shadow-lg hover:shadow-xl",
   }
 
   const sizeClasses = {
-    sm: "px-4 py-2 text-sm",
+    sm: "px-4 py-2.5 text-sm",
     md: "px-6 py-3 text-base",
     lg: "px-8 py-4 text-lg",
   }

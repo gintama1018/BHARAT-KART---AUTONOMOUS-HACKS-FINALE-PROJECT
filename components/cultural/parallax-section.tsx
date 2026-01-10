@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion, useScroll, useTransform, useSpring } from "framer-motion"
 import { useRef, type ReactNode } from "react"
 
 interface ParallaxSectionProps {
@@ -16,7 +16,10 @@ export function ParallaxSection({ children, speed = 0.5, className = "" }: Paral
     offset: ["start end", "end start"],
   })
 
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", `${speed * 100}%`])
+  const springConfig = { stiffness: 100, damping: 30, restDelta: 0.001 }
+  const smoothProgress = useSpring(scrollYProgress, springConfig)
+
+  const y = useTransform(smoothProgress, [0, 1], ["0%", `${speed * 50}%`]) // Reduced speed multiplier for subtlety
 
   return (
     <div ref={ref} className={`relative overflow-hidden ${className}`}>
