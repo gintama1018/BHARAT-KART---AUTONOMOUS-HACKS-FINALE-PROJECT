@@ -12,6 +12,7 @@ import {
   Star,
   Heart,
   ShoppingBag,
+  ShoppingCart,
   Play,
   Calendar,
   Award,
@@ -24,67 +25,40 @@ import Link from "next/link"
 import { useParams } from "next/navigation"
 import { statesData } from "@/lib/states-data"
 import { Breadcrumbs, getStateBreadcrumbs } from "@/components/ui/breadcrumbs"
+import { useCart } from "@/lib/cart-context"
+import { useNotifications } from "@/lib/notification-context"
 
 export default function StatePage() {
   const params = useParams()
   const slug = params.slug as string
   const [activeTab, setActiveTab] = useState("products")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const { addToCart } = useCart()
+  const { addNotification } = useNotifications()
 
   const currentState = statesData[slug] || statesData.rajasthan // Fallback to Rajasthan if slug invalid
 
+  const handleAddToCart = (product: typeof currentState.featuredProducts[0]) => {
+    addToCart({
+      id: `${slug}-${product.id}`,
+      name: product.name,
+      price: product.price,
+      originalPrice: product.originalPrice,
+      image: product.image,
+      artisan: product.artisan,
+      state: currentState.name
+    })
+
+    addNotification({
+      type: "cart_add",
+      title: "Added to Cart",
+      message: `${product.name} from ${currentState.name} has been added to your cart`,
+      link: "/cart"
+    })
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
-      {/* Header */}
-      <motion.header
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-orange-200"
-      >
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link href="/states" className="flex items-center text-orange-600 hover:text-orange-700">
-                <ArrowLeft className="w-5 h-5 mr-2" />
-                Back to States
-              </Link>
-
-              <Link href="/" className="flex items-center space-x-3">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-r ${currentState.gradient || "from-orange-500 to-red-600"}`}
-                >
-                  <Sparkles className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h1
-                    className={`text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${currentState.gradient || "from-orange-600 to-red-600"}`}
-                  >
-                    BharatKart
-                  </h1>
-                </div>
-              </Link>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm" className="text-orange-600">
-                <Heart className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="sm" className="text-orange-600 relative">
-                <ShoppingBag className="w-5 h-5" />
-                <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1">3</Badge>
-              </Button>
-              <Link href="/get-started">
-                <Button
-                  className={`text-white bg-gradient-to-r ${currentState.gradient || "from-orange-500 to-red-600"}`}
-                >
-                  Sign In
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </motion.header>
-
       {/* Breadcrumbs */}
       <Breadcrumbs
         items={getStateBreadcrumbs(currentState.name, currentState.nameHindi)}
@@ -338,8 +312,10 @@ export default function StatePage() {
                             </div>
 
                             <Button
-                              className={`w-full text-white bg-gradient-to-r ${currentState.gradient}`}
+                              onClick={() => handleAddToCart(product)}
+                              className={`w-full text-white bg-gradient-to-r ${currentState.gradient} hover:opacity-90`}
                             >
+                              <ShoppingCart className="w-4 h-4 mr-2" />
                               Add to Cart
                             </Button>
                           </div>

@@ -13,6 +13,8 @@ import { NotificationProvider as PremiumNotificationProvider } from "@/component
 import { PremiumCursor } from "@/components/cultural/premium-cursor"
 import { CartProvider } from "@/lib/cart-context"
 import { NotificationProvider } from "@/lib/notification-context"
+import { AuthProvider } from "@/lib/auth-context"
+import { LanguageProvider } from "@/lib/language-context"
 
 export const metadata: Metadata = {
   title: "BharatKart - Celebrating India's Heritage",
@@ -32,24 +34,27 @@ export default function RootLayout({
     <html lang="en" className={`${geistSans} ${geistMono} antialiased`} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <CartProvider>
-            <NotificationProvider>
-              <AdvancedSoundProvider>
-                <PremiumNotificationProvider>
-                  <PremiumCursor />
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <Header />
-                    <main className="min-h-screen">{children}</main>
-                    <Footer />
-                  </Suspense>
-                </PremiumNotificationProvider>
-              </AdvancedSoundProvider>
-            </NotificationProvider>
-          </CartProvider>
+          <LanguageProvider>
+            <AuthProvider>
+              <CartProvider>
+                <NotificationProvider>
+                  <AdvancedSoundProvider>
+                    <PremiumNotificationProvider>
+                      <PremiumCursor />
+                      <Suspense fallback={<div>Loading...</div>}>
+                        <Header />
+                        <main className="min-h-screen">{children}</main>
+                        <Footer />
+                      </Suspense>
+                    </PremiumNotificationProvider>
+                  </AdvancedSoundProvider>
+                </NotificationProvider>
+              </CartProvider>
+            </AuthProvider>
+          </LanguageProvider>
         </ThemeProvider>
         <Analytics />
       </body>
     </html>
   )
 }
-

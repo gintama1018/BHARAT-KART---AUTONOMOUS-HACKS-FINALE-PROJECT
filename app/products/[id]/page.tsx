@@ -114,50 +114,6 @@ export default function ProductDetailPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50">
-      {/* Header */}
-      <motion.header
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-orange-200"
-      >
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link href="/explore" className="flex items-center text-orange-600 hover:text-orange-700">
-                <ArrowLeft className="w-5 h-5 mr-2" />
-                Back to Products
-              </Link>
-
-              <Link href="/" className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                    BharatKart
-                  </h1>
-                </div>
-              </Link>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm" className="text-orange-600">
-                <Heart className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="sm" className="text-orange-600 relative">
-                <ShoppingBag className="w-5 h-5" />
-                <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1">3</Badge>
-              </Button>
-              <Link href="/get-started">
-                <Button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white">
-                  Sign In
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </motion.header>
-
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Images */}
@@ -184,9 +140,8 @@ export default function ProductDetailPage() {
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedImage === index ? "border-orange-500" : "border-gray-200"
-                    }`}
+                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${selectedImage === index ? "border-orange-500" : "border-gray-200"
+                      }`}
                   >
                     <img src={image || "/placeholder.svg"} alt="" className="w-full h-full object-cover" />
                   </button>
@@ -207,9 +162,8 @@ export default function ProductDetailPage() {
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        className={`w-5 h-5 ${
-                          i < Math.floor(product.rating) ? "text-yellow-500 fill-current" : "text-gray-300"
-                        }`}
+                        className={`w-5 h-5 ${i < Math.floor(product.rating) ? "text-yellow-500 fill-current" : "text-gray-300"
+                          }`}
                       />
                     ))}
                     <span className="ml-2 text-sm font-medium">{product.rating}</span>
@@ -289,9 +243,8 @@ export default function ProductDetailPage() {
                     size="lg"
                     variant="outline"
                     onClick={() => setIsWishlisted(!isWishlisted)}
-                    className={`border-orange-300 ${
-                      isWishlisted ? "bg-orange-50 text-red-500" : "text-orange-600"
-                    } hover:bg-orange-50`}
+                    className={`border-orange-300 ${isWishlisted ? "bg-orange-50 text-red-500" : "text-orange-600"
+                      } hover:bg-orange-50`}
                   >
                     <Heart className={`w-5 h-5 ${isWishlisted ? "fill-current" : ""}`} />
                   </Button>
@@ -480,9 +433,8 @@ export default function ProductDetailPage() {
                                   {[...Array(5)].map((_, i) => (
                                     <Star
                                       key={i}
-                                      className={`w-4 h-4 ${
-                                        i < review.rating ? "text-yellow-500 fill-current" : "text-gray-300"
-                                      }`}
+                                      className={`w-4 h-4 ${i < review.rating ? "text-yellow-500 fill-current" : "text-gray-300"
+                                        }`}
                                     />
                                   ))}
                                 </div>

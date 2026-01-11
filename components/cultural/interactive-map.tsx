@@ -2,10 +2,13 @@
 
 import { motion } from "framer-motion"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { MapPin } from "lucide-react"
 
 interface StateInfo {
   name: string
   nameHindi: string
+  slug: string
   specialties: string[]
   color: string
 }
@@ -14,30 +17,35 @@ const statesData: Record<string, StateInfo> = {
   rajasthan: {
     name: "Rajasthan",
     nameHindi: "राजस्थान",
+    slug: "rajasthan",
     specialties: ["Blue Pottery", "Kathputli", "Block Prints"],
     color: "#DC143C",
   },
   gujarat: {
     name: "Gujarat",
     nameHindi: "गुजरात",
+    slug: "gujarat",
     specialties: ["Bandhani", "Mirror Work", "Patola"],
     color: "#FFD700",
   },
   maharashtra: {
     name: "Maharashtra",
     nameHindi: "महाराष्ट्र",
+    slug: "maharashtra",
     specialties: ["Warli Art", "Paithani", "Kolhapuri"],
     color: "#FF8C00",
   },
   kerala: {
     name: "Kerala",
     nameHindi: "केरल",
+    slug: "kerala",
     specialties: ["Coir Products", "Spices", "Ayurveda"],
     color: "#228B22",
   },
   tamilnadu: {
     name: "Tamil Nadu",
     nameHindi: "तमिल नाडु",
+    slug: "tamil-nadu",
     specialties: ["Bronze Idols", "Silk Sarees", "Tanjore Art"],
     color: "#B8860B",
   },
@@ -45,7 +53,14 @@ const statesData: Record<string, StateInfo> = {
 
 export function InteractiveMap() {
   const [hoveredState, setHoveredState] = useState<string | null>(null)
-  const [selectedState, setSelectedState] = useState<string | null>(null)
+  const router = useRouter()
+
+  const handleStateClick = (stateKey: string) => {
+    const state = statesData[stateKey]
+    if (state) {
+      router.push(`/states/${state.slug}`)
+    }
+  }
 
   return (
     <div className="relative w-full max-w-4xl mx-auto">
@@ -66,7 +81,7 @@ export function InteractiveMap() {
             className="cursor-pointer"
             onMouseEnter={() => setHoveredState("rajasthan")}
             onMouseLeave={() => setHoveredState(null)}
-            onClick={() => setSelectedState("rajasthan")}
+            onClick={() => handleStateClick("rajasthan")}
             whileHover={{ scale: 1.05 }}
             animate={{
               fill: hoveredState === "rajasthan" ? statesData.rajasthan.color : "#FFA500",
@@ -82,7 +97,7 @@ export function InteractiveMap() {
             className="cursor-pointer"
             onMouseEnter={() => setHoveredState("gujarat")}
             onMouseLeave={() => setHoveredState(null)}
-            onClick={() => setSelectedState("gujarat")}
+            onClick={() => handleStateClick("gujarat")}
             whileHover={{ scale: 1.05 }}
           />
 
@@ -95,7 +110,7 @@ export function InteractiveMap() {
             className="cursor-pointer"
             onMouseEnter={() => setHoveredState("maharashtra")}
             onMouseLeave={() => setHoveredState(null)}
-            onClick={() => setSelectedState("maharashtra")}
+            onClick={() => handleStateClick("maharashtra")}
             whileHover={{ scale: 1.05 }}
           />
 
@@ -108,7 +123,7 @@ export function InteractiveMap() {
             className="cursor-pointer"
             onMouseEnter={() => setHoveredState("kerala")}
             onMouseLeave={() => setHoveredState(null)}
-            onClick={() => setSelectedState("kerala")}
+            onClick={() => handleStateClick("kerala")}
             whileHover={{ scale: 1.05 }}
           />
 
@@ -121,7 +136,7 @@ export function InteractiveMap() {
             className="cursor-pointer"
             onMouseEnter={() => setHoveredState("tamilnadu")}
             onMouseLeave={() => setHoveredState(null)}
-            onClick={() => setSelectedState("tamilnadu")}
+            onClick={() => handleStateClick("tamilnadu")}
             whileHover={{ scale: 1.05 }}
           />
 
@@ -164,24 +179,33 @@ export function InteractiveMap() {
                 </motion.div>
               ))}
             </div>
+            <div className="mt-3 pt-3 border-t border-orange-100">
+              <p className="text-xs text-orange-600 font-medium flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                Click to explore →
+              </p>
+            </div>
           </motion.div>
         )}
 
         {/* Legend */}
         <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg">
-          <p className="text-sm font-medium text-gray-700 mb-2">Hover to explore states</p>
-          <div className="flex space-x-2">
-            {Object.entries(statesData)
-              .slice(0, 3)
-              .map(([key, state]) => (
-                <div key={key} className="flex items-center space-x-1">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: state.color }} />
-                  <span className="text-xs text-gray-600">{state.name}</span>
-                </div>
-              ))}
+          <p className="text-sm font-medium text-gray-700 mb-2">Click any state to explore</p>
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(statesData).map(([key, state]) => (
+              <button
+                key={key}
+                onClick={() => handleStateClick(key)}
+                className="flex items-center space-x-1 hover:bg-orange-50 px-2 py-1 rounded transition-colors"
+              >
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: state.color }} />
+                <span className="text-xs text-gray-600">{state.name}</span>
+              </button>
+            ))}
           </div>
         </div>
       </motion.div>
     </div>
   )
 }
+

@@ -28,49 +28,9 @@ export default function StatesPage() {
     return matchesSearch && matchesRegion
   })
 
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50">
-      {/* Header */}
-      <motion.header
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-orange-200"
-      >
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                  BharatKart
-                </h1>
-                <p className="text-xs text-orange-600 font-medium">भारत कार्ट</p>
-              </div>
-            </Link>
-
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/explore" className="text-gray-700 hover:text-orange-600 transition-colors">
-                Explore
-              </Link>
-              <Link href="/artisans" className="text-gray-700 hover:text-orange-600 transition-colors">
-                Artisans
-              </Link>
-              <Link href="/collections" className="text-gray-700 hover:text-orange-600 transition-colors">
-                Collections
-              </Link>
-            </nav>
-
-            <Link href="/get-started">
-              <Button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white">
-                Sign In
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </motion.header>
-
       {/* Breadcrumbs */}
       <Breadcrumbs
         items={breadcrumbConfigs.states}

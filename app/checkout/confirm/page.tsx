@@ -33,7 +33,7 @@ export default function OrderConfirmationPage() {
     // Countdown timer
     useEffect(() => {
         if (countdown <= 0) {
-            router.push("/")
+            router.replace("/")
             return
         }
 
@@ -183,13 +183,13 @@ export default function OrderConfirmationPage() {
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.8 + index * 0.2 }}
                                 className={`flex items-center gap-4 p-4 rounded-xl ${step.status === "current"
-                                        ? "bg-green-50 dark:bg-green-900/20 border-2 border-green-500"
-                                        : "bg-gray-50 dark:bg-gray-700/50"
+                                    ? "bg-green-50 dark:bg-green-900/20 border-2 border-green-500"
+                                    : "bg-gray-50 dark:bg-gray-700/50"
                                     }`}
                             >
                                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${step.status === "current"
-                                        ? "bg-green-500 text-white"
-                                        : "bg-gray-200 dark:bg-gray-600 text-gray-400"
+                                    ? "bg-green-500 text-white"
+                                    : "bg-gray-200 dark:bg-gray-600 text-gray-400"
                                     }`}>
                                     <step.icon className="w-6 h-6" />
                                 </div>

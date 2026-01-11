@@ -6,11 +6,34 @@ import { motion } from "framer-motion"
 import { ArrowLeft, Star, ShoppingCart, Heart, Filter, Grid3X3, List, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { categoriesData, getProductsByCategory, getAllProducts } from "@/lib/categories-data"
+import { useCart } from "@/lib/cart-context"
+import { useNotifications } from "@/lib/notification-context"
 
 export default function CategoryPage() {
     const params = useParams()
     const slug = params.slug as string
     const category = categoriesData[slug]
+    const { addToCart } = useCart()
+    const { addNotification } = useNotifications()
+
+    const handleAddToCart = (item: { product: any; stateName: string; stateId: string }) => {
+        addToCart({
+            id: `${item.stateId}-${item.product.id}`,
+            name: item.product.name,
+            price: item.product.price,
+            originalPrice: item.product.originalPrice,
+            image: item.product.image,
+            artisan: item.product.artisan,
+            state: item.stateName
+        })
+
+        addNotification({
+            type: "cart_add",
+            title: "Added to Cart",
+            message: `${item.product.name} from ${item.stateName} has been added to your cart`,
+            link: "/cart"
+        })
+    }
 
     if (!category) {
         return (
@@ -144,7 +167,10 @@ export default function CategoryPage() {
                                     </button>
 
                                     {/* Quick Add */}
-                                    <button className="absolute bottom-3 left-3 right-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-medium py-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 hover:bg-orange-500 hover:text-white">
+                                    <button
+                                        onClick={() => handleAddToCart(item)}
+                                        className="absolute bottom-3 left-3 right-3 bg-orange-500 hover:bg-orange-600 text-white font-medium py-2.5 rounded-full opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-2 shadow-lg"
+                                    >
                                         <ShoppingCart className="w-4 h-4" />
                                         Add to Cart
                                     </button>

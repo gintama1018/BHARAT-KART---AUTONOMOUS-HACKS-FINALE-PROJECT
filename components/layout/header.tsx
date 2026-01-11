@@ -2,23 +2,31 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { Search, ShoppingCart, User, Menu, X, Heart, Bell, Sun, Moon } from "lucide-react"
+import { Search, ShoppingCart, User, Menu, X, Heart, Bell, Sun, Moon, LogOut, Package, Settings, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { SearchWithSuggestions } from "@/components/ui/search-with-suggestions"
+import { LanguageSelector } from "@/components/ui/language-selector"
 import { useTheme } from "next-themes"
 import { useCart } from "@/lib/cart-context"
 import { useNotifications, NotificationDropdown } from "@/lib/notification-context"
+import { useAuth } from "@/lib/auth-context"
+import { useLanguage } from "@/lib/language-context"
 
 export function Header() {
+  const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
   const { getCartCount } = useCart()
   const { unreadCount } = useNotifications()
+  const { user, profile, loading, signOut } = useAuth()
+  const { t } = useLanguage()
 
   useEffect(() => {
     setMounted(true)
@@ -52,13 +60,13 @@ export function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
             <Link href="/explore" className="text-gray-700 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400 transition-colors font-medium text-sm xl:text-base">
-              Explore
+              {t("nav.explore")}
             </Link>
             <Link href="/states" className="text-gray-700 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400 transition-colors font-medium text-sm xl:text-base">
-              States
+              {t("nav.states")}
             </Link>
             <Link href="/artisans" className="text-gray-700 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400 transition-colors font-medium text-sm xl:text-base">
-              Artisans
+              {t("nav.artisans")}
             </Link>
             <Link href="/festivals" className="text-gray-700 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400 transition-colors font-medium text-sm xl:text-base">
               Festivals
@@ -81,6 +89,11 @@ export function Header() {
             <Button variant="ghost" size="sm" className="hidden sm:flex text-gray-700 dark:text-gray-200 hover:bg-orange-100 dark:hover:bg-orange-900/30 hover:text-orange-600">
               <Heart className="w-5 h-5" />
             </Button>
+
+            {/* Language Selector */}
+            <div className="hidden md:block">
+              <LanguageSelector />
+            </div>
 
             {/* Notifications */}
             <div className="relative">
@@ -147,12 +160,84 @@ export function Header() {
               </Button>
             </Link>
 
-            {/* Profile */}
-            <Link href="/get-started">
-              <Button variant="ghost" size="sm" className="text-gray-700 dark:text-gray-200 hover:bg-orange-100 dark:hover:bg-orange-900/30 hover:text-orange-600">
-                <User className="w-5 h-5" />
-              </Button>
-            </Link>
+            {/* User Profile / Auth */}
+            <div className="relative">
+              {loading ? (
+                <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
+              ) : user ? (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:bg-orange-100 dark:hover:bg-orange-900/30"
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  >
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white font-semibold">
+                      {profile?.full_name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
+                    </div>
+                    <ChevronDown className="w-4 h-4 hidden sm:block" />
+                  </Button>
+
+                  <AnimatePresence>
+                    {isUserMenuOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50"
+                      >
+                        <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                          <p className="font-semibold text-gray-900 dark:text-white">
+                            {profile?.full_name || 'User'}
+                          </p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                            {user.email}
+                          </p>
+                        </div>
+                        <Link href="/orders" onClick={() => setIsUserMenuOpen(false)}>
+                          <div className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                            <Package className="w-4 h-4 text-gray-500" />
+                            <span className="text-sm text-gray-700 dark:text-gray-300">My Orders</span>
+                          </div>
+                        </Link>
+                        <Link href="/profile" onClick={() => setIsUserMenuOpen(false)}>
+                          <div className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                            <Settings className="w-4 h-4 text-gray-500" />
+                            <span className="text-sm text-gray-700 dark:text-gray-300">Settings</span>
+                          </div>
+                        </Link>
+                        <div className="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
+                          <button
+                            onClick={() => {
+                              signOut()
+                              setIsUserMenuOpen(false)
+                              router.push('/')
+                            }}
+                            className="flex items-center gap-3 px-4 py-2.5 w-full hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer text-red-600"
+                          >
+                            <LogOut className="w-4 h-4" />
+                            <span className="text-sm">Sign Out</span>
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Link href="/auth/login">
+                    <Button variant="ghost" size="sm" className="hidden sm:flex text-gray-700 dark:text-gray-200 hover:bg-orange-100 dark:hover:bg-orange-900/30">
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link href="/auth/register">
+                    <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
+                      Sign Up
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
 
             {/* Mobile Menu Toggle */}
             <Button variant="ghost" size="sm" className="lg:hidden text-gray-700 dark:text-gray-200 hover:bg-orange-100 dark:hover:bg-orange-900/30" onClick={() => setIsMenuOpen(!isMenuOpen)}>
