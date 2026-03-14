@@ -122,27 +122,27 @@ export default function AddProductPage() {
                     </div>
                 </div>
 
-                {/* Steps Indicator */}
-                <div className="flex items-center justify-center gap-2 mb-8">
-                    {["record", "review", "publish"].map((s, i) => (
-                        <div key={s} className="flex items-center">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${step === s || (step === "edit" && s === "review") || step === "success"
-                                    ? "bg-orange-500 text-white"
-                                    : i < ["record", "review", "publish"].indexOf(step === "success" ? "publish" : step)
-                                        ? "bg-green-500 text-white"
-                                        : "bg-gray-200 dark:bg-gray-700 text-gray-500"
-                                }`}>
-                                {i + 1}
-                            </div>
-                            {i < 2 && (
-                                <div className={`w-16 h-1 mx-1 rounded ${i < ["record", "review", "publish"].indexOf(step === "success" ? "publish" : step)
-                                        ? "bg-green-500"
-                                        : "bg-gray-200 dark:bg-gray-700"
-                                    }`} />
-                            )}
-                        </div>
-                    ))}
-                </div>
+                 {/* Steps Indicator */}
+                 <div className="flex items-center justify-center gap-2 mb-8">
+                     {["record", "review", "publish"].map((s, i) => (
+                         <div key={s} className="flex items-center">
+                             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${step === s || (step === "edit" && s === "review")
+                                     ? "bg-orange-500 text-white"
+                                     : (step === "success" || i < ["record", "review", "publish"].indexOf(step))
+                                         ? "bg-green-500 text-white"
+                                         : "bg-gray-200 dark:bg-gray-700 text-gray-500"
+                                 }`}>
+                                 {i + 1}
+                             </div>
+                             {i < 2 && (
+                                 <div className={`w-16 h-1 mx-1 rounded ${step === "success" || i < ["record", "review", "publish"].indexOf(step)
+                                         ? "bg-green-500"
+                                         : "bg-gray-200 dark:bg-gray-700"
+                                     }`} />
+                             )}
+                         </div>
+                     ))}
+                 </div>
 
                 {/* Content */}
                 <AnimatePresence mode="wait">

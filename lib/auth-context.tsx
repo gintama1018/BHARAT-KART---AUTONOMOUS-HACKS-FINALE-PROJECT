@@ -1,16 +1,33 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react"
-import { User, AuthError, Session, AuthChangeEvent } from "@supabase/supabase-js"
-import { createClient, Profile } from "./supabase"
+import { 
+    onAuthStateChanged, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    signInWithPopup, 
+    signOut as firebaseSignOut,
+    updateProfile as firebaseUpdateProfile,
+    User as FirebaseUser
+} from 'firebase/auth'
+import { auth, googleProvider } from "./firebase"
+
+// We are adapting Profile interface to avoid massive rewrite of the existing codebase
+export interface Profile {
+    id: string
+    full_name: string | null
+    phone: string | null
+    avatar_url: string | null
+    created_at: string
+}
 
 interface AuthContextType {
-    user: User | null
+    user: FirebaseUser | null
     profile: Profile | null
     loading: boolean
-    signUp: (email: string, password: string, fullName: string) => Promise<{ error: AuthError | Error | null }>
-    signIn: (email: string, password: string) => Promise<{ error: AuthError | Error | null }>
-    signInWithGoogle: () => Promise<{ error: AuthError | Error | null }>
+    signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>
+    signIn: (email: string, password: string) => Promise<{ error: Error | null }>
+    signInWithGoogle: () => Promise<{ error: Error | null }>
     signOut: () => Promise<void>
     updateProfile: (updates: Partial<Profile>) => Promise<{ error: Error | null }>
 }
@@ -18,132 +35,95 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<User | null>(null)
+    const [user, setUser] = useState<FirebaseUser | null>(null)
     const [profile, setProfile] = useState<Profile | null>(null)
     const [loading, setLoading] = useState(true)
-    const [supabase] = useState(() => createClient())
 
     useEffect(() => {
-        // If Supabase client is not available, just set loading to false
-        if (!supabase) {
-            setLoading(false)
-            return
-        }
-
-        // Get initial session
-        const getSession = async () => {
-            try {
-                const { data: { session } } = await supabase.auth.getSession()
-                setUser(session?.user ?? null)
-                if (session?.user) {
-                    await fetchProfile(session.user.id)
-                }
-            } catch (e) {
-                console.warn('Auth session error:', e)
-            }
-            setLoading(false)
-        }
-
-        getSession()
-
-        // Listen for auth changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-            setUser(session?.user ?? null)
-            if (session?.user) {
-                await fetchProfile(session.user.id)
+        const unsubscribe = onAuthStateChanged(auth, (currentUser: any) => {
+            setUser(currentUser)
+            if (currentUser) {
+                // Construct a mock profile since we are not connecting to a database for profiles yet
+                setProfile({
+                    id: currentUser.uid,
+                    full_name: currentUser.displayName || null,
+                    phone: currentUser.phoneNumber || null,
+                    avatar_url: currentUser.photoURL || null,
+                    created_at: currentUser.metadata.creationTime || new Date().toISOString()
+                })
             } else {
                 setProfile(null)
             }
             setLoading(false)
         })
 
-        return () => subscription.unsubscribe()
-    }, [supabase])
-
-    const fetchProfile = async (userId: string) => {
-        if (!supabase) return
-        try {
-            const { data, error } = await supabase
-                .from("profiles")
-                .select("*")
-                .eq("id", userId)
-                .single()
-
-            if (!error && data) {
-                setProfile(data)
-            }
-        } catch (e) {
-            console.warn('Profile fetch error:', e)
-        }
-    }
+        return () => unsubscribe()
+    }, [])
 
     const signUp = async (email: string, password: string, fullName: string) => {
-        if (!supabase) return { error: new Error("Supabase not configured") }
-
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-                data: {
-                    full_name: fullName
-                }
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+            if (userCredential.user) {
+                await firebaseUpdateProfile(userCredential.user, {
+                    displayName: fullName
+                })
+                // Manually update the profile state for immediate UI feedback
+                setProfile({
+                    id: userCredential.user.uid,
+                    full_name: fullName,
+                    phone: null,
+                    avatar_url: null,
+                    created_at: new Date().toISOString()
+                })
             }
-        })
-
-        if (!error && data.user) {
-            // Create profile
-            await supabase.from("profiles").insert({
-                id: data.user.id,
-                full_name: fullName
-            })
+            return { error: null }
+        } catch (error: any) {
+            return { error: new Error(error.message || "Failed to sign up") }
         }
-
-        return { error }
     }
 
     const signIn = async (email: string, password: string) => {
-        if (!supabase) return { error: new Error("Supabase not configured") }
-
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password
-        })
-        return { error }
+        try {
+            await signInWithEmailAndPassword(auth, email, password)
+            return { error: null }
+        } catch (error: any) {
+            return { error: new Error(error.message || "Failed to sign in") }
+        }
     }
 
     const signInWithGoogle = async () => {
-        if (!supabase) return { error: new Error("Supabase not configured") }
-
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: `${window.location.origin}/auth/callback`
-            }
-        })
-        return { error }
+        try {
+            await signInWithPopup(auth, googleProvider)
+            return { error: null }
+        } catch (error: any) {
+            return { error: new Error(error.message || "Failed to sign in with Google") }
+        }
     }
 
     const signOut = async () => {
-        if (!supabase) return
-        await supabase.auth.signOut()
-        setUser(null)
-        setProfile(null)
+        try {
+            await firebaseSignOut(auth)
+            setUser(null)
+            setProfile(null)
+        } catch (error) {
+            console.error("Sign out error", error)
+        }
     }
 
     const updateProfile = async (updates: Partial<Profile>) => {
-        if (!supabase) return { error: new Error("Supabase not configured") }
         if (!user) return { error: new Error("Not authenticated") }
-
-        const { error } = await supabase
-            .from("profiles")
-            .update(updates)
-            .eq("id", user.id)
-
-        if (!error) {
+        
+        try {
+            await firebaseUpdateProfile(user, {
+                displayName: updates.full_name !== undefined ? updates.full_name : user.displayName,
+                photoURL: updates.avatar_url !== undefined ? updates.avatar_url : user.photoURL,
+            })
+            
             setProfile(prev => prev ? { ...prev, ...updates } : null)
+            return { error: null }
+        } catch (error: any) {
+            return { error: new Error(error.message || "Failed to update profile") }
         }
-
-        return { error }
     }
 
     return (
@@ -169,4 +149,3 @@ export function useAuth() {
     }
     return context
 }
-

@@ -72,7 +72,7 @@ export default function ImpactPage() {
                 titleHindi="हमारा प्रभाव"
                 subtitle="Every purchase you make creates ripples of positive change across India's artisan communities. See how we're preserving heritage while empowering lives."
                 gradient="from-green-600 via-teal-600 to-orange-600"
-                breadcrumbs={breadcrumbConfigs.impact}
+                breadcrumbs={[...breadcrumbConfigs.impact]}
             />
 
             {/* Impact Statistics */}

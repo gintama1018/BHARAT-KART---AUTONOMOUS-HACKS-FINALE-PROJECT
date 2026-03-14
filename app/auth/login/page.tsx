@@ -151,20 +151,34 @@ export default function LoginPage() {
 
                     {/* Social Login */}
                     <div className="grid grid-cols-2 gap-4">
-                        <Button
-                            variant="outline"
-                            className="py-6 gap-2"
-                            onClick={async () => {
-                                setIsGoogleLoading(true)
-                                setError("")
-                                const { error } = await signInWithGoogle()
-                                if (error) {
-                                    setError(error.message)
-                                    setIsGoogleLoading(false)
-                                }
-                            }}
-                            disabled={isGoogleLoading}
-                        >
+                         <Button
+                             variant="outline"
+                             className="py-6 gap-2"
+                             onClick={async () => {
+                                 setIsGoogleLoading(true)
+                                 setError("")
+                                 try {
+                                     const { error } = await signInWithGoogle()
+                                     if (error) {
+                                         console.error("Google sign-in error:", error)
+                                         // Check if it's a configuration issue
+                                         if (error.message?.includes('invalid_grant') || 
+                                             error.message?.includes('400') ||
+                                             error.message?.includes('not_enabled') ||
+                                             error.message?.includes('redirect_uri_mismatch')) {
+                                             setError("Google Sign-In configuration issue. Please use email/password login or contact support.")
+                                         } else {
+                                             setError(error.message || "Unknown error occurred")
+                                         }
+                                     }
+                                 } catch (err) {
+                                     console.error("Google login error:", err)
+                                     setError("Unable to connect to Google Sign-In service. Please try again later.")
+                                 }
+                                 setIsGoogleLoading(false)
+                             }}
+                             disabled={isGoogleLoading}
+                         >
                             {isGoogleLoading ? (
                                 <motion.div
                                     animate={{ rotate: 360 }}

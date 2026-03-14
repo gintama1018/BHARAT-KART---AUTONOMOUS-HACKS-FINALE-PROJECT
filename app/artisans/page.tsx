@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Star, Award, MapPin, ShoppingBag, Filter, Heart } from "lucide-react"
+import { Search, Star, Award, MapPin, ShoppingBag, Filter, Heart, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { PageContainer, PageHero, Section } from "@/components/layout/page-layout"
 import { artisansData, craftCategories, stateFilters } from "@/lib/artisans-data"
@@ -32,7 +32,7 @@ export default function ArtisansPage() {
                 title="Meet Our Master Artisans"
                 titleHindi="हमारे कारीगरों से मिलें"
                 subtitle="Discover the skilled hands behind India's most treasured crafts. Each artisan carries forward generations of tradition and mastery."
-                breadcrumbs={breadcrumbConfigs.artisans}
+                breadcrumbs={[...breadcrumbConfigs.artisans]}
             >
                 <div className="max-w-2xl mx-auto mt-8">
                     <div className="relative">
@@ -182,6 +182,30 @@ export default function ArtisansPage() {
                     </div>
                 )}
             </Section>
+
+            {/* Call to Action for Artisans to List Products */}
+            <section className="py-16 bg-gradient-to-r from-amber-500 to-red-500 text-white">
+                <div className="container mx-auto px-4 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                    >
+                        <h2 className="text-3xl font-bold mb-4">
+                            Want to List Your Products?
+                        </h2>
+                        <p className="text-lg text-yellow-100 max-w-2xl mx-auto">
+                            Showcase your handcrafted creations to customers across India and worldwide. Simple listing process with voice-assisted product description.
+                        </p>
+                        <Link href="/artisans/add-product">
+                             <Button size="lg" className="bg-white text-amber-600 hover:bg-yellow-50">
+                                 List Your Product
+                                 <ArrowRight className="w-5 h-5 ml-2" />
+                             </Button>
+                         </Link>
+                    </motion.div>
+                </div>
+            </section>
 
             {/* Join as Artisan CTA */}
             <section className="py-16 bg-gradient-to-r from-orange-600 to-red-600 text-white">

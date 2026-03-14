@@ -45,7 +45,7 @@ export default function ContactPage() {
                 titleHindi="संपर्क करें"
                 subtitle="Have a question about our products, artisans, or orders? We'd love to hear from you. Our team is here to help!"
                 gradient="from-teal-600 via-cyan-600 to-orange-600"
-                breadcrumbs={breadcrumbConfigs.contact}
+                breadcrumbs={[...breadcrumbConfigs.contact]}
             />
 
             {/* Contact Cards */}

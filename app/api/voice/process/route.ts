@@ -1,27 +1,36 @@
 import { NextRequest, NextResponse } from "next/server"
 import { GoogleGenerativeAI } from "@google/generative-ai"
 
-// Gemini API configuration
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "")
-
 export async function POST(request: NextRequest) {
+    console.log("--- Voice Processing Start ---")
+    const apiKey = process.env.GEMINI_API_KEY || ""
+    
+    if (!apiKey) {
+        console.error("CRITICAL: GEMINI_API_KEY is missing from environment variables")
+        return NextResponse.json({ error: "Gemini API key not configured" }, { status: 500 })
+    }
+
+    const genAI = new GoogleGenerativeAI(apiKey)
+    
     try {
         const formData = await request.formData()
         const audioFile = formData.get("audio") as File
 
         if (!audioFile) {
-            return NextResponse.json(
-                { error: "No audio file provided" },
-                { status: 400 }
-            )
+            console.error("Error: No audio file in formData")
+            return NextResponse.json({ error: "No audio file provided" }, { status: 400 })
         }
+
+        console.log(`Audio file received: ${audioFile.name}, Size: ${audioFile.size}, Type: ${audioFile.type}`)
 
         // Convert audio to base64
         const audioBuffer = await audioFile.arrayBuffer()
         const audioBase64 = Buffer.from(audioBuffer).toString("base64")
+        
+        console.log("Audio converted to Base64, length:", audioBase64.length)
 
         // Use Gemini for transcription and structured extraction
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
 
         const prompt = `You are assisting an Indian artisan in creating a product listing for their handcrafted item.
 
@@ -49,28 +58,33 @@ Required JSON structure:
 
 If you cannot extract certain fields, set them to null. Always provide the transcription.`
 
-        // For audio processing, we'll use the multimodal capabilities
+        const mimeType = audioFile.type.split(';')[0] || "audio/webm"
+        console.log("Cleaning MIME Type to:", mimeType)
+
+        console.log("Calling Gemini API...")
         const result = await model.generateContent([
             {
                 inlineData: {
-                    mimeType: audioFile.type || "audio/webm",
+                    mimeType: mimeType,
                     data: audioBase64
                 }
             },
-            prompt
+            { text: prompt }
         ])
 
+        console.log("Gemini API call successful")
         const response = await result.response
         const text = response.text()
+        console.log("Raw AI response length:", text.length)
 
         // Parse the JSON response
         let extractedData
         try {
-            // Clean up the response in case it has markdown code blocks
             const cleanedText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim()
             extractedData = JSON.parse(cleanedText)
+            console.log("JSON parsing successful")
         } catch (parseError) {
-            // If parsing fails, return raw text with error
+            console.error("JSON Parse Error. Raw Text:", text)
             return NextResponse.json({
                 success: false,
                 error: "Failed to parse AI response",
@@ -84,15 +98,10 @@ If you cannot extract certain fields, set them to null. Always provide the trans
         })
 
     } catch (error: any) {
-        console.error("Voice processing error:", error)
-
-        // Handle specific Gemini API errors
-        if (error.message?.includes("API key")) {
-            return NextResponse.json(
-                { error: "Gemini API key not configured" },
-                { status: 500 }
-            )
-        }
+        console.error("UNHANDLED VOICE PROCESSING ERROR:", error)
+        console.error("Error Name:", error.name)
+        console.error("Error Message:", error.message)
+        if (error.stack) console.error("Stack Trace:", error.stack)
 
         return NextResponse.json(
             { error: "Failed to process audio", details: error.message },

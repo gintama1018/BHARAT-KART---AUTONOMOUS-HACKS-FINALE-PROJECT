@@ -29,7 +29,7 @@ export default function FestivalsPage() {
                 titleHindi="त्योहार संग्रह"
                 subtitle="Celebrate India's vibrant festivals with authentic handcrafted treasures. Each festival brings unique traditions and special artisan creations."
                 gradient="from-purple-600 via-pink-600 to-orange-600"
-                breadcrumbs={breadcrumbConfigs.festivals}
+                breadcrumbs={[...breadcrumbConfigs.festivals]}
             />
 
             {/* Month Filters */}

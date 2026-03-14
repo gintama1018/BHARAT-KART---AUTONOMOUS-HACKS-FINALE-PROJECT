@@ -21,7 +21,7 @@ export default function CollectionsPage() {
                 titleHindi="संग्रह"
                 subtitle="Explore our handpicked collections showcasing the finest traditional crafts from across India's diverse regions and art forms."
                 gradient="from-amber-600 via-orange-600 to-red-600"
-                breadcrumbs={breadcrumbConfigs.collections}
+                breadcrumbs={[...breadcrumbConfigs.collections]}
             />
 
             {/* Featured Collections */}

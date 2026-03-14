@@ -39,7 +39,7 @@ export default function ReturnsPage() {
                 titleHindi="वापसी और धनवापसी"
                 subtitle="We want you to love your purchase. If something isn't right, we're here to help with our hassle-free return policy."
                 gradient="from-purple-600 via-pink-600 to-orange-600"
-                breadcrumbs={breadcrumbConfigs.returns}
+                breadcrumbs={[...breadcrumbConfigs.returns]}
             />
 
             {/* Return Policy Overview */}
