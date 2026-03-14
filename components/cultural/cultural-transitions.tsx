@@ -32,8 +32,6 @@ export function CulturalTransition({ children, type = "fade", isVisible = true }
       },
       transition: {
         duration: 0.8,
-        ease: "easeInOut",
-        filter: { duration: 2 },
       },
     },
     scroll: {
@@ -54,7 +52,6 @@ export function CulturalTransition({ children, type = "fade", isVisible = true }
       },
       transition: {
         duration: 0.6,
-        ease: "easeInOut",
       },
     },
     mandala: {
@@ -78,7 +75,6 @@ export function CulturalTransition({ children, type = "fade", isVisible = true }
       },
       transition: {
         duration: 0.7,
-        ease: "easeInOut",
       },
     },
     fade: {

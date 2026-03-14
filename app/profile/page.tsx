@@ -43,7 +43,7 @@ export default function ProfilePage() {
         const { data } = await supabase
             .from("addresses")
             .select("*")
-            .eq("user_id", user.id)
+            .eq("user_id", user.uid)
             .order("is_default", { ascending: false })
 
         if (data) setAddresses(data)

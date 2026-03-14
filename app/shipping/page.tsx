@@ -29,7 +29,7 @@ export default function ShippingPage() {
                 titleHindi="शिपिंग जानकारी"
                 subtitle="We deliver authentic Indian handicrafts to your doorstep with care. Learn about our shipping policies and delivery timelines."
                 gradient="from-blue-600 via-teal-600 to-orange-600"
-                breadcrumbs={breadcrumbConfigs.shipping}
+                breadcrumbs={[...breadcrumbConfigs.shipping]}
             />
 
             {/* Shipping Features */}

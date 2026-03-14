@@ -238,9 +238,9 @@ export default function GetStartedPage() {
                       icon={<Lock className="w-5 h-5" />}
                     />
 
-                    <PremiumButton type="submit" variant="primary" size="lg" className="w-full py-3">
+                    <button type="submit" className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 hover:shadow-lg">
                       Sign In
-                    </PremiumButton>
+                    </button>
                   </form>
 
                   <div className="mt-6 text-center">
@@ -303,26 +303,25 @@ export default function GetStartedPage() {
                           icon={<User className="w-5 h-5" />}
                         />
 
-                        <PremiumInput
-                          label="Email Address"
-                          type="email"
-                          placeholder="Enter your email"
-                          value={formData.email}
-                          onChange={(value) => handleInputChange("email", value)}
-                          error={errors.email}
-                          success={formData.email && !errors.email && /\S+@\S+\.\S+/.test(formData.email)}
-                          icon={<Mail className="w-5 h-5" />}
-                        />
+                         <PremiumInput
+                           label="Email Address"
+                           type="email"
+                           placeholder="Enter your email"
+                           value={formData.email}
+                           onChange={(value) => handleInputChange("email", value)}
+                           error={errors.email}
+                           success={formData.email && !errors.email && /\S+@\S+\.\S+/.test(formData.email) ? true : undefined}
+                           icon={<Mail className="w-5 h-5" />}
+                         />
 
-                        <PremiumButton
-                          type="button"
-                          onClick={handleNext}
-                          variant="primary"
-                          size="lg"
-                          className="w-full py-3"
-                        >
-                          Continue
-                        </PremiumButton>
+                         <PremiumButton
+                           onClick={handleNext}
+                           variant="primary"
+                           size="lg"
+                           className="w-full py-3"
+                         >
+                           Continue
+                         </PremiumButton>
                       </motion.form>
                     )}
 
@@ -353,25 +352,23 @@ export default function GetStartedPage() {
                           icon={<MapPin className="w-5 h-5" />}
                         />
 
-                        <div className="flex space-x-3">
-                          <PremiumButton
-                            type="button"
-                            onClick={handleBack}
-                            variant="secondary"
-                            size="lg"
-                            className="flex-1"
-                          >
-                            Back
-                          </PremiumButton>
-                          <PremiumButton
-                            type="button"
-                            onClick={handleNext}
-                            variant="primary"
-                            size="lg"
-                            className="flex-1"
-                          >
-                            Continue
-                          </PremiumButton>
+                         <div className="flex space-x-3">
+                           <PremiumButton
+                             onClick={handleBack}
+                             variant="secondary"
+                             size="lg"
+                             className="flex-1"
+                           >
+                             Back
+                           </PremiumButton>
+                           <PremiumButton
+                             onClick={handleNext}
+                             variant="primary"
+                             size="lg"
+                             className="flex-1"
+                           >
+                             Continue
+                           </PremiumButton>
                         </div>
                       </motion.form>
                     )}
@@ -392,7 +389,7 @@ export default function GetStartedPage() {
                           value={formData.password}
                           onChange={(value) => handleInputChange("password", value)}
                           error={errors.password}
-                          success={formData.password && formData.password.length >= 6}
+                           success={formData.password && formData.password.length >= 6 ? true : undefined}
                           icon={<Lock className="w-5 h-5" />}
                         />
 
@@ -403,36 +400,22 @@ export default function GetStartedPage() {
                           value={formData.confirmPassword}
                           onChange={(value) => handleInputChange("confirmPassword", value)}
                           error={errors.confirmPassword}
-                          success={formData.confirmPassword && formData.password === formData.confirmPassword}
+                           success={formData.confirmPassword && formData.password === formData.confirmPassword ? true : undefined}
                           icon={<Lock className="w-5 h-5" />}
                         />
 
-                        <div className="flex space-x-3">
-                          <PremiumButton
-                            type="button"
-                            onClick={handleBack}
-                            variant="secondary"
-                            size="lg"
-                            className="flex-1"
-                          >
-                            Back
-                          </PremiumButton>
-                          <PremiumButton
-                            type="submit"
-                            variant="primary"
-                            size="lg"
-                            className="flex-1"
-                            onClick={() => {
-                              if (validateStep(3)) {
-                                playSound("success")
-                                // Handle form submission
-                              } else {
-                                playSound("error")
-                              }
-                            }}
-                          >
-                            Create Account
-                          </PremiumButton>
+                         <div className="flex space-x-3">
+                           <PremiumButton
+                             onClick={handleBack}
+                             variant="secondary"
+                             size="lg"
+                             className="flex-1"
+                           >
+                             Back
+                           </PremiumButton>
+                           <button type="submit" className="flex-1 w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 hover:shadow-lg">
+                             Create Account
+                           </button>
                         </div>
                       </motion.form>
                     )}

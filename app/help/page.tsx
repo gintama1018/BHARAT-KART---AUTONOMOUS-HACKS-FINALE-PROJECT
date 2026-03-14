@@ -50,7 +50,7 @@ export default function HelpPage() {
                 title="Help Center"
                 titleHindi="सहायता केंद्र"
                 subtitle="Find answers to common questions or get in touch with our support team. We're here to help!"
-                breadcrumbs={breadcrumbConfigs.help}
+                breadcrumbs={[...breadcrumbConfigs.help]}
             >
                 <div className="max-w-2xl mx-auto mt-8">
                     <div className="relative">

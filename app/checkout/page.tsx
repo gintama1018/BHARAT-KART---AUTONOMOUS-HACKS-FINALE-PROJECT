@@ -33,6 +33,78 @@ interface FormErrors {
   cvv?: string
 }
 
+interface InputFieldProps {
+  name: keyof FormData
+  label: string
+  type?: string
+  placeholder: string
+  icon?: any
+  className?: string
+  value: string
+  error?: string
+  isTouched?: boolean
+  onChange: (name: keyof FormData, value: string) => void
+  onBlur: (name: keyof FormData) => void
+}
+
+const InputField = ({
+  name,
+  label,
+  type = "text",
+  placeholder,
+  icon: Icon,
+  className = "",
+  value,
+  error,
+  isTouched,
+  onChange,
+  onBlur
+}: InputFieldProps) => (
+  <div className={className}>
+    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+      {label} <span className="text-red-500">*</span>
+    </label>
+    <div className="relative">
+      {Icon && <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />}
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(name, e.target.value)}
+        onBlur={() => onBlur(name)}
+        placeholder={placeholder}
+        className={`w-full ${Icon ? "pl-10" : "px-4"} pr-10 py-3 border rounded-xl bg-white dark:bg-gray-900 transition-colors ${error && isTouched
+            ? "border-red-500 focus:ring-red-500"
+            : isTouched && !error
+              ? "border-green-500 focus:ring-green-500"
+              : "border-gray-200 dark:border-gray-700 focus:ring-orange-500"
+          } focus:outline-none focus:ring-2`}
+      />
+      {isTouched && (
+        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+          {error ? (
+            <AlertCircle className="w-5 h-5 text-red-500" />
+          ) : (
+            <CheckCircle2 className="w-5 h-5 text-green-500" />
+          )}
+        </div>
+      )}
+    </div>
+    <AnimatePresence>
+      {error && isTouched && (
+        <motion.p
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          className="text-red-500 text-xs mt-1 flex items-center gap-1"
+        >
+          <AlertCircle className="w-3 h-3" />
+          {error}
+        </motion.p>
+      )}
+    </AnimatePresence>
+  </div>
+)
+
 export default function CheckoutPage() {
   const router = useRouter()
   const { items, getCartTotal, clearCart } = useCart()
@@ -174,66 +246,6 @@ export default function CheckoutPage() {
     )
   }
 
-  const InputField = ({
-    name,
-    label,
-    type = "text",
-    placeholder,
-    icon: Icon,
-    className = ""
-  }: {
-    name: keyof FormData
-    label: string
-    type?: string
-    placeholder: string
-    icon?: any
-    className?: string
-  }) => (
-    <div className={className}>
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-        {label} <span className="text-red-500">*</span>
-      </label>
-      <div className="relative">
-        {Icon && <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />}
-        <input
-          type={type}
-          value={formData[name]}
-          onChange={(e) => handleChange(name, e.target.value)}
-          onBlur={() => handleBlur(name)}
-          placeholder={placeholder}
-          className={`w-full ${Icon ? "pl-10" : "px-4"} pr-10 py-3 border rounded-xl bg-white dark:bg-gray-900 transition-colors ${errors[name] && touched[name]
-              ? "border-red-500 focus:ring-red-500"
-              : touched[name] && !errors[name]
-                ? "border-green-500 focus:ring-green-500"
-                : "border-gray-200 dark:border-gray-700 focus:ring-orange-500"
-            } focus:outline-none focus:ring-2`}
-        />
-        {touched[name] && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            {errors[name] ? (
-              <AlertCircle className="w-5 h-5 text-red-500" />
-            ) : (
-              <CheckCircle2 className="w-5 h-5 text-green-500" />
-            )}
-          </div>
-        )}
-      </div>
-      <AnimatePresence>
-        {errors[name] && touched[name] && (
-          <motion.p
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="text-red-500 text-xs mt-1 flex items-center gap-1"
-          >
-            <AlertCircle className="w-3 h-3" />
-            {errors[name]}
-          </motion.p>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-
   return (
     <main className="min-h-screen bg-gradient-to-b from-orange-50 to-white dark:from-gray-900 dark:to-gray-950 py-8">
       <div className="container mx-auto px-4">
@@ -263,9 +275,9 @@ export default function CheckoutPage() {
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InputField name="fullName" label="Full Name" placeholder="Enter your full name" icon={User} />
-                <InputField name="phone" label="Phone Number" type="tel" placeholder="9876543210" icon={Phone} />
-                <InputField name="email" label="Email Address" type="email" placeholder="your@email.com" icon={Mail} className="md:col-span-2" />
+                <InputField name="fullName" label="Full Name" placeholder="Enter your full name" icon={User} value={formData.fullName} error={errors.fullName} isTouched={touched.fullName} onChange={handleChange} onBlur={handleBlur} />
+                <InputField name="phone" label="Phone Number" type="tel" placeholder="9876543210" icon={Phone} value={formData.phone} error={errors.phone} isTouched={touched.phone} onChange={handleChange} onBlur={handleBlur} />
+                <InputField name="email" label="Email Address" type="email" placeholder="your@email.com" icon={Mail} className="md:col-span-2" value={formData.email} error={errors.email} isTouched={touched.email} onChange={handleChange} onBlur={handleBlur} />
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -311,8 +323,8 @@ export default function CheckoutPage() {
                   </AnimatePresence>
                 </div>
 
-                <InputField name="city" label="City" placeholder="City" />
-                <InputField name="pinCode" label="PIN Code" placeholder="110001" />
+                <InputField name="city" label="City" placeholder="City" value={formData.city} error={errors.city} isTouched={touched.city} onChange={handleChange} onBlur={handleBlur} />
+                <InputField name="pinCode" label="PIN Code" placeholder="110001" value={formData.pinCode} error={errors.pinCode} isTouched={touched.pinCode} onChange={handleChange} onBlur={handleBlur} />
               </div>
             </motion.div>
 
@@ -366,10 +378,10 @@ export default function CheckoutPage() {
                     exit={{ opacity: 0, height: 0 }}
                     className="mt-6 space-y-4"
                   >
-                    <InputField name="cardNumber" label="Card Number" placeholder="1234 5678 9012 3456" />
+                    <InputField name="cardNumber" label="Card Number" placeholder="1234 5678 9012 3456" value={formData.cardNumber} error={errors.cardNumber} isTouched={touched.cardNumber} onChange={handleChange} onBlur={handleBlur} />
                     <div className="grid grid-cols-2 gap-4">
-                      <InputField name="expiry" label="Expiry Date" placeholder="MM/YY" />
-                      <InputField name="cvv" label="CVV" placeholder="123" />
+                      <InputField name="expiry" label="Expiry Date" placeholder="MM/YY" value={formData.expiry} error={errors.expiry} isTouched={touched.expiry} onChange={handleChange} onBlur={handleBlur} />
+                      <InputField name="cvv" label="CVV" placeholder="123" value={formData.cvv} error={errors.cvv} isTouched={touched.cvv} onChange={handleChange} onBlur={handleBlur} />
                     </div>
                   </motion.div>
                 )}
