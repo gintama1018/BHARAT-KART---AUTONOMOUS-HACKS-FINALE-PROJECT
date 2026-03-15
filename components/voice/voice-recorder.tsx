@@ -36,7 +36,17 @@ export function VoiceRecorder({ onRecordingComplete, isProcessing, className }: 
         try {
             setError(null)
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-            const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' })
+            
+            const mimeType = [
+                'audio/webm;codecs=opus',
+                'audio/webm',
+                'audio/mp4',
+                'audio/ogg',
+            ].find(type => MediaRecorder.isTypeSupported(type)) || ''
+
+            const mediaRecorder = new MediaRecorder(stream, 
+                mimeType ? { mimeType } : {}
+            )
             mediaRecorderRef.current = mediaRecorder
             chunksRef.current = []
 
@@ -47,7 +57,8 @@ export function VoiceRecorder({ onRecordingComplete, isProcessing, className }: 
             }
 
             mediaRecorder.onstop = () => {
-                const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
+                const type = mimeType || 'audio/webm'
+                const blob = new Blob(chunksRef.current, { type })
                 setRecordedBlob(blob)
                 const url = URL.createObjectURL(blob)
                 setAudioUrl(url)

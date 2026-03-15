@@ -1,12 +1,11 @@
 import { createBrowserClient } from '@supabase/ssr'
 
-// Supabase configuration - hardcoded temporarily for testing
-const SUPABASE_URL = 'https://dxshuprwpggyuacejlwb.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4c2h1cHJ3cGdneXVhY2VqbHdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgwNzYxNzgsImV4cCI6MjA4MzY1MjE3OH0.2K3WRU71pwHzZcIKqmy7fbOzwqXf-SmukiuGWQtyTvs'
-
 // Create a Supabase client for browser usage
 export function createClient() {
-    return createBrowserClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    return createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
 }
 
 // Types for our database

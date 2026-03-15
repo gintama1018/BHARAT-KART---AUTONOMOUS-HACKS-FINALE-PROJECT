@@ -8,6 +8,8 @@ import { ArrowLeft, CreditCard, Truck, Shield, Lock, MapPin, Phone, Mail, User, 
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/lib/cart-context"
 import { useNotifications } from "@/lib/notification-context"
+import { useAuth } from "@/lib/auth-context"
+import { createClient } from "@/lib/supabase"
 
 interface FormData {
   fullName: string
@@ -109,6 +111,7 @@ export default function CheckoutPage() {
   const router = useRouter()
   const { items, getCartTotal, clearCart } = useCart()
   const { addNotification } = useNotifications()
+  const { user } = useAuth()
   const [isProcessing, setIsProcessing] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState("card")
   const [formData, setFormData] = useState<FormData>({
@@ -217,20 +220,94 @@ export default function CheckoutPage() {
 
     setIsProcessing(true)
 
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    try {
+      const supabase = createClient()
+      let addressId = null
+      
+      // Save address if user is logged in
+      if (user) {
+        const { data: addressData, error: addressError } = await supabase
+          .from('addresses')
+          .insert({
+            user_id: user.id,
+            full_name: formData.fullName,
+            phone: formData.phone,
+            email: formData.email,
+            address: formData.address,
+            city: formData.city,
+            pin_code: formData.pinCode,
+            is_default: true
+          })
+          .select('id')
+          .single()
+        
+        if (addressError) throw addressError
+        addressId = addressData.id
+      }
 
-    // Clear cart and show notification
-    clearCart()
-    addNotification({
-      type: "order_placed",
-      title: "Order Placed Successfully!",
-      message: `Your order of ₹${total.toLocaleString()} has been confirmed.`,
-      link: "/checkout/confirm"
-    })
+      // Create Order
+      const orderNumber = 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase()
+      const { data: orderData, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          user_id: user ? user.id : 'guest',
+          order_number: orderNumber,
+          status: 'processing',
+          subtotal: subtotal,
+          shipping: shipping,
+          tax: tax,
+          total: total,
+          address_id: addressId,
+          payment_method: paymentMethod
+        })
+        .select('id')
+        .single()
+      
+      if (orderError) throw orderError
+      const orderId = orderData.id
 
-    // Redirect to confirmation page (replace to prevent back navigation)
-    router.replace("/checkout/confirm")
+      // Create Order Items
+      const orderItems = items.map(item => {
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(item.id)
+        return {
+          order_id: orderId,
+          product_id: isUuid ? item.id : null,
+          product_name: item.name,
+          product_image: item.image,
+          artisan: item.artisan || 'Unknown Artisan',
+          state: item.state || 'Unknown State',
+          price: item.price,
+          quantity: item.quantity
+        }
+      })
+
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems)
+        
+      if (itemsError) throw itemsError
+      
+      // Clear cart and show notification
+      clearCart()
+      addNotification({
+        type: "order_placed",
+        title: "Order Placed Successfully!",
+        message: `Your order ${orderNumber} of ₹${total.toLocaleString()} has been confirmed.`,
+        link: "/orders"
+      })
+
+      router.replace("/orders")
+      
+    } catch (error) {
+       console.error("Error placing order:", error)
+       addNotification({
+         type: "info",
+         title: "Order Failed",
+         message: "There was a problem placing your order. Please try again.",
+       })
+    } finally {
+       setIsProcessing(false)
+    }
   }
 
   if (items.length === 0) {

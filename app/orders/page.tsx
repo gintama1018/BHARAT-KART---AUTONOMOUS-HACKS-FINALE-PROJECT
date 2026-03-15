@@ -33,7 +33,7 @@ export default function OrdersPage() {
         const { data, error } = await supabase
             .from("orders")
             .select("*, order_items(*)")
-            .eq("user_id", user!.uid)
+            .eq("user_id", user!.id)
             .order("created_at", { ascending: false })
 
         if (!error && data) {

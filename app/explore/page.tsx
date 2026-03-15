@@ -25,11 +25,13 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/ui/breadcrumbs"
+import { createClient } from "@/lib/supabase"
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [currentFestival, setCurrentFestival] = useState(0)
+  const [productCount, setProductCount] = useState<number>(15000)
 
   const festivals = [
     {
@@ -136,6 +138,21 @@ export default function ExplorePage() {
     const interval = setInterval(() => {
       setCurrentFestival((prev) => (prev + 1) % festivals.length)
     }, 4000)
+    
+    // Fetch product count from Supabase
+    async function fetchStats() {
+      const supabase = createClient()
+      const { count } = await supabase
+        .from('products')
+        .select('*', { count: 'exact', head: true })
+        
+      if (count !== null) {
+        setProductCount(count)
+      }
+    }
+    
+    fetchStats()
+    
     return () => clearInterval(interval)
   }, [])
 
@@ -271,7 +288,7 @@ export default function ExplorePage() {
             {[
               { icon: MapPin, number: "28", label: "States Covered" },
               { icon: Users, number: "2000+", label: "Active Artisans" },
-              { icon: ShoppingBag, number: "15K+", label: "Unique Products" },
+              { icon: ShoppingBag, number: `${productCount}+`, label: "Unique Products" },
               { icon: Star, number: "4.9", label: "Average Rating" },
             ].map((stat, index) => (
               <motion.div

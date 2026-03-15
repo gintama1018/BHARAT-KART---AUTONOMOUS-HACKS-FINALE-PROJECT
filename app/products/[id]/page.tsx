@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -24,6 +24,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import { createClient } from "@/lib/supabase"
 
 export default function ProductDetailPage() {
   const params = useParams()
@@ -32,84 +33,171 @@ export default function ProductDetailPage() {
   const [activeTab, setActiveTab] = useState("description")
   const [isWishlisted, setIsWishlisted] = useState(false)
 
-  // Sample product data - in real app this would come from API
-  const product = {
-    id: "RAJ001",
-    name: "Royal Kathputli Puppet",
-    nameHindi: "राजकुमारी कठपुतली",
-    price: 1250,
-    originalPrice: 1800,
-    discount: 30,
-    rating: 4.8,
-    reviewCount: 147,
-    inStock: true,
-    stockCount: 25,
-    images: [
-      "/rajasthan-desert-palace.jpg",
-      "/indian-artisan-crafting-pottery.jpg",
-      "/gujarat-colorful-textiles-kites.jpg",
-      "/tamil-nadu-bronze-temple.jpg",
-    ],
-    description:
-      "Handcrafted Kathputli puppet representing 500+ years of Rajasthani tradition. Each puppet is meticulously carved from mango wood and dressed in vibrant traditional attire with intricate embroidery and mirror work.",
-    culturalSignificance:
-      "Kathputli is an ancient string puppet theatre form that originated in Rajasthan over 1000 years ago. These puppets were traditionally used by traveling bards to tell stories of heroic deeds and romantic tales.",
-    materials: ["Mango Wood", "Cotton Fabric", "Natural Colors", "Mirror Work"],
-    dimensions: "30cm height, 15cm width",
-    weight: "200g",
-    deliveryTime: "5-7 days",
-    artisan: {
-      id: "ART001",
-      name: "Ramesh Kumar",
-      experience: "25 years",
-      location: "Udaipur, Rajasthan",
-      specialty: "Traditional Puppet Making",
-      story: "Third generation puppet maker preserving ancient Rajasthani traditions",
-      photo: "/rajasthan-desert-palace.jpg",
-      rating: 4.9,
-      totalSales: 1200,
-    },
-    features: {
-      handmade: true,
-      ecoFriendly: true,
-      fastDelivery: true,
-      giftWrapping: true,
-      customizable: false,
-    },
-    reviews: [
-      {
-        id: 1,
-        user: "Priya Sharma",
-        rating: 5,
-        comment: "Absolutely beautiful craftsmanship! The attention to detail is incredible.",
-        date: "2024-01-15",
-        verified: true,
-      },
-      {
-        id: 2,
-        user: "Amit Patel",
-        rating: 4,
-        comment: "Great quality puppet. My daughter loves it. Fast delivery too.",
-        date: "2024-01-10",
-        verified: true,
-      },
-    ],
-    relatedProducts: [
-      {
-        id: "RAJ002",
-        name: "Blue Pottery Vase",
-        price: 850,
-        image: "/indian-artisan-crafting-pottery.jpg",
-        rating: 4.7,
-      },
-      {
-        id: "RAJ003",
-        name: "Block Print Bedsheet",
-        price: 2200,
-        image: "/gujarat-colorful-textiles-kites.jpg",
-        rating: 4.9,
-      },
-    ],
+  const [product, setProduct] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchProduct() {
+      if (!params || !params.id) return
+      
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(params.id as string)
+      
+      if (!isUuid) {
+        // Fallback for mock IDs like "RAJ001"
+        setProduct({
+          id: "RAJ001",
+          name: "Royal Kathputli Puppet",
+          nameHindi: "राजकुमारी कठपुतली",
+          price: 1250,
+          originalPrice: 1800,
+          discount: 30,
+          rating: 4.8,
+          reviewCount: 147,
+          inStock: true,
+          stockCount: 25,
+          images: [
+            "/rajasthan-desert-palace.jpg",
+            "/indian-artisan-crafting-pottery.jpg",
+            "/gujarat-colorful-textiles-kites.jpg",
+            "/tamil-nadu-bronze-temple.jpg",
+          ],
+          description:
+            "Handcrafted Kathputli puppet representing 500+ years of Rajasthani tradition. Each puppet is meticulously carved from mango wood and dressed in vibrant traditional attire with intricate embroidery and mirror work.",
+          culturalSignificance:
+            "Kathputli is an ancient string puppet theatre form that originated in Rajasthan over 1000 years ago. These puppets were traditionally used by traveling bards to tell stories of heroic deeds and romantic tales.",
+          materials: ["Mango Wood", "Cotton Fabric", "Natural Colors", "Mirror Work"],
+          dimensions: "30cm height, 15cm width",
+          weight: "200g",
+          deliveryTime: "5-7 days",
+          artisan: {
+            id: "ART001",
+            name: "Ramesh Kumar",
+            experience: "25 years",
+            location: "Udaipur, Rajasthan",
+            specialty: "Traditional Puppet Making",
+            story: "Third generation puppet maker preserving ancient Rajasthani traditions",
+            photo: "/rajasthan-desert-palace.jpg",
+            rating: 4.9,
+            totalSales: 1200,
+          },
+          features: {
+            handmade: true,
+            ecoFriendly: true,
+            fastDelivery: true,
+            giftWrapping: true,
+            customizable: false,
+          },
+          reviews: [
+            {
+              id: 1,
+              user: "Priya Sharma",
+              rating: 5,
+              comment: "Absolutely beautiful craftsmanship! The attention to detail is incredible.",
+              date: "2024-01-15",
+              verified: true,
+            },
+            {
+              id: 2,
+              user: "Amit Patel",
+              rating: 4,
+              comment: "Great quality puppet. My daughter loves it. Fast delivery too.",
+              date: "2024-01-10",
+              verified: true,
+            },
+          ],
+          relatedProducts: [
+            {
+              id: "RAJ002",
+              name: "Blue Pottery Vase",
+              price: 850,
+              image: "/indian-artisan-crafting-pottery.jpg",
+              rating: 4.7,
+            },
+            {
+              id: "RAJ003",
+              name: "Block Print Bedsheet",
+              price: 2200,
+              image: "/gujarat-colorful-textiles-kites.jpg",
+              rating: 4.9,
+            },
+          ],
+        })
+        setLoading(false)
+        return
+      }
+
+      // Fetch from Supabase
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', params.id as string)
+        .single()
+        
+      if (data) {
+        setProduct({
+          id: data.id,
+          name: data.product_name,
+          nameHindi: "",
+          price: data.price || 0,
+          originalPrice: (data.price || 0) * 1.2,
+          discount: 20,
+          rating: data.confidence_score ? (data.confidence_score * 5).toFixed(1) : 4.8,
+          reviewCount: 0,
+          inStock: true,
+          stockCount: 10,
+          images: [
+            "/placeholder.svg",
+            "/indian-artisan-crafting-pottery.jpg"
+          ],
+          description: data.description || "Authentic Indian craft.",
+          culturalSignificance: data.transcription || "",
+          materials: data.material ? [data.material] : ["Natural Materials"],
+          dimensions: "Standard",
+          weight: "Standard",
+          deliveryTime: "5-7 days",
+          artisan: {
+            id: data.user_id,
+            name: "Artisan",
+            experience: "Skilled",
+            location: data.state || "India",
+            specialty: data.craft_type || "Craft",
+            story: "Local artisan preserving heritage.",
+            photo: "/placeholder.svg",
+            rating: 4.9,
+            totalSales: 0,
+          },
+          features: {
+            handmade: true,
+            ecoFriendly: true,
+            fastDelivery: true,
+            giftWrapping: false,
+            customizable: false,
+          },
+          reviews: [],
+          relatedProducts: []
+        })
+      }
+      setLoading(false)
+    }
+
+    fetchProduct()
+  }, [params])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+      </div>
+    )
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50">
+        <h1 className="text-2xl font-bold text-gray-800">Product not found</h1>
+      </div>
+    )
   }
 
   return (
@@ -136,7 +224,7 @@ export default function ProductDetailPage() {
 
               {/* Thumbnail Images */}
               <div className="flex space-x-2 overflow-x-auto">
-                {product.images.map((image, index) => (
+                {product.images.map((image: string, index: number) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
@@ -423,7 +511,7 @@ export default function ProductDetailPage() {
                   <div>
                     <h3 className="text-2xl font-bold mb-4 text-gray-800">Customer Reviews</h3>
                     <div className="space-y-4">
-                      {product.reviews.map((review) => (
+                      {product.reviews.map((review: any) => (
                         <Card key={review.id} className="p-6 border-orange-100">
                           <div className="flex items-center justify-between mb-3">
                             <div>
@@ -493,7 +581,7 @@ export default function ProductDetailPage() {
         >
           <h3 className="text-2xl font-bold mb-8 text-gray-800">You Might Also Like</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {product.relatedProducts.map((relatedProduct, index) => (
+            {product.relatedProducts.map((relatedProduct: any, index: number) => (
               <motion.div
                 key={relatedProduct.id}
                 initial={{ opacity: 0, y: 30 }}

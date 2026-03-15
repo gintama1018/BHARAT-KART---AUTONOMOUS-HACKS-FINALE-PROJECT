@@ -8,6 +8,7 @@ import { ArrowLeft, Mic, Edit2, Save, Image, Tag, MapPin, Sparkles, CheckCircle,
 import { Button } from "@/components/ui/button"
 import { VoiceRecorder } from "@/components/voice/voice-recorder"
 import { useAuth } from "@/lib/auth-context"
+import { createClient } from "@/lib/supabase"
 
 interface ExtractedProduct {
     transcription: string
@@ -65,9 +66,40 @@ export default function AddProductPage() {
     }
 
     const handlePublish = async () => {
-        // In a real app, this would save to the database
-        // For now, we'll just show success
-        setStep("success")
+        if (!editedData || !user) return;
+        
+        setIsProcessing(true);
+        setError(null);
+        
+        try {
+            const supabase = createClient();
+            
+            const parsedPrice = parseFloat(price.replace(/[^0-9.]/g, '')) || null;
+            
+            const { error: insertError } = await supabase
+                .from('products')
+                .insert({
+                    user_id: user.id,
+                    product_name: editedData.product_name,
+                    description: editedData.description,
+                    craft_type: editedData.craft_type,
+                    material: editedData.material,
+                    state: editedData.state,
+                    cultural_tags: editedData.cultural_tags,
+                    price: parsedPrice,
+                    language_detected: editedData.language_detected,
+                    transcription: editedData.transcription,
+                    confidence_score: editedData.confidence_score,
+                });
+            
+            if (insertError) throw insertError;
+            
+            setStep("success");
+        } catch (err: any) {
+            setError(err.message || "Failed to publish product. Please try again.");
+        } finally {
+            setIsProcessing(false);
+        }
     }
 
     const handleFieldChange = (field: keyof ExtractedProduct, value: any) => {
@@ -347,10 +379,14 @@ export default function AddProductPage() {
                                 </Button>
                                 <Button
                                     onClick={handlePublish}
+                                    disabled={isProcessing}
                                     className="gap-2 bg-orange-500 hover:bg-orange-600"
                                 >
-                                    <CheckCircle className="w-4 h-4" />
-                                    Publish Product
+                                    {isProcessing ? (
+                                        <><Loader2 className="w-4 h-4 animate-spin" />Publishing...</>
+                                    ) : (
+                                        <><CheckCircle className="w-4 h-4" />Publish Product</>
+                                    )}
                                 </Button>
                             </div>
                         </motion.div>

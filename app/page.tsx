@@ -13,11 +13,13 @@ import { CulturalTransition } from "@/components/cultural/cultural-transitions"
 import { InteractiveMap } from "@/components/cultural/interactive-map"
 import { ThreeDEnvironment } from "@/components/cultural/three-d-environment"
 import { useSound, useCulturalSounds } from "@/components/cultural/advanced-sound-manager"
+import { createClient } from "@/lib/supabase"
 
 export default function LandingPage() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isLoaded, setIsLoaded] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [productCount, setProductCount] = useState<number>(15000)
   const { playAmbient } = useSound()
   const { playHover, playClick } = useCulturalSounds()
 
@@ -45,7 +47,7 @@ export default function LandingPage() {
   const culturalStats = [
     { number: "28", label: "States", icon: MapPin },
     { number: "2000+", label: "Artisans", icon: Users },
-    { number: "15000+", label: "Products", icon: ShoppingBag },
+    { number: `${productCount}+`, label: "Products", icon: ShoppingBag },
     { number: "4.9", label: "Rating", icon: Star },
   ]
 
@@ -91,6 +93,21 @@ export default function LandingPage() {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
     }, 5000)
+    
+    // Fetch product count from Supabase
+    async function fetchStats() {
+      const supabase = createClient()
+      const { count } = await supabase
+        .from('products')
+        .select('*', { count: 'exact', head: true })
+        
+      if (count !== null) {
+        setProductCount(count)
+      }
+    }
+    
+    fetchStats()
+    
     return () => clearInterval(interval)
   }, [playAmbient])
 
